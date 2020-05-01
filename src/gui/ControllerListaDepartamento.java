@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,8 +15,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.entities.Departamento;
+import model.service.ServicoDepartamento;
 
 public class ControllerListaDepartamento implements Initializable{
+	
+	private ServicoDepartamento service; // Injetar a depeência sem colocar a implementação 'new ServicoDepartamento'
 	
 	@FXML
 	private TableView<Departamento> tableViewDepartamento; // Tipo TableView
@@ -27,9 +33,15 @@ public class ControllerListaDepartamento implements Initializable{
 	@FXML
 	private Button btNew; // Tipo Botão
 	
+	private ObservableList<Departamento> obsList;
+	
 	@FXML
 	public void onBtNewAction() { // Ação que ocorrerá após o botão 'Novo' ser clicado
 		System.out.println("onBtNewAction");
+	}
+	
+	public void setServicoDepartamento(ServicoDepartamento service) {
+		this.service = service;
 	}
 	
 	@Override
@@ -48,6 +60,15 @@ public class ControllerListaDepartamento implements Initializable{
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartamento.prefHeightProperty().bind(stage.heightProperty());
+	}
+	
+	public void updateTableView() {
+		if (service == null) {
+			throw new IllegalStateException("Serviço está nulo.");
+		}
+		List<Departamento> list = service.findAll();
+		obsList = FXCollections.observableArrayList(list);
+		tableViewDepartamento.setItems(obsList);
 	}
 
 }
