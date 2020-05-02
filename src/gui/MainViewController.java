@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alertas;
@@ -35,19 +36,22 @@ public class MainViewController implements Initializable{
 	
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		loadView2("/gui/listaDepartamento.fxml");
+		loadView("/gui/listaDepartamento.fxml", (ControllerListaDepartamento controller) -> {
+			controller.setServicoDepartamento(new ServicoDepartamento());
+			controller.updateTableView();
+		});
 	}
 	
 	@FXML
 	public void onMenuItemAjudaAction() {
-		loadView("/gui/Ajuda.fxml");
+		loadView("/gui/Ajuda.fxml", x -> {});
 	}
 	
 	@Override
 	public void initialize(URL uri, ResourceBundle rb) {
 	}
 	
-	private synchronized void loadView(String nomeAbsoluto) { // Função para abrir uma outra tela. synchronized = Garante que o processamento não será interrompido pelo Thread
+	private synchronized <T> void loadView(String nomeAbsoluto, Consumer<T> initializingAction) { // Função para abrir uma outra tela. synchronized = Garante que o processamento não será interrompido pelo Thread
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto)); // Padrão do método ' (getClass().getResource(nomeAbsoluto)) '
 			VBox newVBox = loader.load();
@@ -65,33 +69,12 @@ public class MainViewController implements Initializable{
 			 * Com isso é possível manipular a cena principal
 			 * e incluir o Main Menu e os filhos da janela que está sendo aberta pelo método.
 			 */
+			
+			T controller = loader.getController(); // Irão executar a função que está sendo passada como argumento no método 'onMenuItemDepartamentoAction' entre outros métodos
+			initializingAction.accept(controller); // Irão executar a função que está sendo passada como argumento no método 'onMenuItemDepartamentoAction' entre outros métodos
 		}
 		catch (IOException e) {
 			Alertas.showAlert("IO Exception", "Erro carregando a página.", e.getMessage(), AlertType.ERROR);
 		}
 	}
-		
-		private synchronized void loadView2(String nomeAbsoluto) { // Função para abrir uma outra tela. synchronized = Garante que o processamento não será interrompido pelo Thread
-			try {
-				FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto)); // Padrão do método ' (getClass().getResource(nomeAbsoluto)) '
-				VBox newVBox = loader.load();
-				
-				Scene mainScene = Main.getMainScene();
-				VBox mainVBox =(VBox) ((ScrollPane)mainScene.getRoot()).getContent();
-				
-				Node mainMenu = mainVBox.getChildren().get(0);
-				
-				mainVBox.getChildren().clear();
-				mainVBox.getChildren().add(mainMenu);
-				mainVBox.getChildren().addAll(newVBox.getChildren());
-				
-				ControllerListaDepartamento controller = loader.getController();
-				controller.setServicoDepartamento(new ServicoDepartamento());
-				controller.updateTableView();
-			}
-			catch (IOException e) {
-				Alertas.showAlert("IO Exception", "Erro carregando a página.", e.getMessage(), AlertType.ERROR);
-			}
-	}
-
 }
