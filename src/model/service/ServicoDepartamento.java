@@ -14,4 +14,12 @@ public class ServicoDepartamento {
 		return dao.findAll();
 	}
 
+	public void inserirOuAtualizarDepartamento(Departamento dep) {
+		if (dep.getId() == null) {
+			dao.insert(dep);
+		}
+		else {
+			dao.update(dep);
+		}
+	}
 }

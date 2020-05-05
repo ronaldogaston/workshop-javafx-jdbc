@@ -3,17 +3,26 @@ package gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import db.DbException;
+import gui.util.Alertas;
 import gui.util.Restricoes;
+import gui.util.Utils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Departamento;
+import model.service.ServicoDepartamento;
 
 public class DepartamentoFormController implements Initializable{
 	
 	private Departamento entity;
+	
+	private ServicoDepartamento srvDepartamento;
 	
 	@FXML
 	private TextField txtId;
@@ -34,14 +43,40 @@ public class DepartamentoFormController implements Initializable{
 		this.entity = entity;
 	}
 	
-	@FXML
-	public void onBtSalvarAction() {
-		System.out.println("onBtSalvarAction");
+	public void setServicoDepartamento (ServicoDepartamento srvDepartamento) {
+		this.srvDepartamento = srvDepartamento;
 	}
 	
 	@FXML
-	public void onBtCancelarAction() {
-		System.out.println("onBtCancelarAction");
+	public void onBtSalvarAction(ActionEvent event) {
+		if (entity == null) {
+			throw new IllegalStateException("Entity está nulo");
+		}
+		if (srvDepartamento == null) {
+			throw new IllegalStateException("srvDepartamento está nulo");
+		}
+		try {
+			entity = getFormData();
+			srvDepartamento.inserirOuAtualizarDepartamento(entity);
+			Utils.currentStage(event).close();
+		}
+		catch (DbException e) {
+			Alertas.showAlert("Erro ao salvar departamento", null, e.getMessage(), AlertType.ERROR);
+		}
+	}
+	
+	private Departamento getFormData() {
+		Departamento dep = new Departamento();
+		
+		dep.setId(Utils.tryParseToInt(txtId.getText())); // Verifica se o campo está preenchido com número inteiro
+		dep.setNome(txtNome.getText());
+		
+		return dep;
+	}
+
+	@FXML
+	public void onBtCancelarAction(ActionEvent event) {
+		Utils.currentStage(event).close();
 	}
 	
 	@Override
