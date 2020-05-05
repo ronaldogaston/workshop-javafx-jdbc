@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.ouvintes.AtualizaDadosLista;
 import gui.util.Alertas;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Departamento;
 import model.service.ServicoDepartamento;
 
-public class ControllerListaDepartamento implements Initializable{
+public class ControllerListaDepartamento implements Initializable, AtualizaDadosLista{
 	
 	private ServicoDepartamento service; // Injetar a depeência sem colocar a implementação 'new ServicoDepartamento'
 	
@@ -90,6 +91,7 @@ public class ControllerListaDepartamento implements Initializable{
 			DepartamentoFormController controller = loader.getController();
 			controller.setDepartamento(dep);
 			controller.setServicoDepartamento(new ServicoDepartamento());
+			controller.sobrescreveAtualizaDadosLista(this); // Cadeia de chamadas até o método 'onAtualizaDados'
 			controller.updateDados();
 			
 			Stage dialogoStage = new Stage();
@@ -109,6 +111,11 @@ public class ControllerListaDepartamento implements Initializable{
 		catch (IOException e) {
 			Alertas.showAlert("IO Exception", "Erro ao carrega janela", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onAtualizaDados() {
+		updateTableView();
 	}
 	
 }

@@ -1,16 +1,18 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.ouvintes.AtualizaDadosLista;
 import gui.util.Alertas;
 import gui.util.Restricoes;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,6 +25,8 @@ public class DepartamentoFormController implements Initializable{
 	private Departamento entity;
 	
 	private ServicoDepartamento srvDepartamento;
+	
+	private List<AtualizaDadosLista> atualizaDadosLista = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -47,6 +51,10 @@ public class DepartamentoFormController implements Initializable{
 		this.srvDepartamento = srvDepartamento;
 	}
 	
+	public void sobrescreveAtualizaDadosLista (AtualizaDadosLista ouvintes) {
+		atualizaDadosLista.add(ouvintes);
+	}
+	
 	@FXML
 	public void onBtSalvarAction(ActionEvent event) {
 		if (entity == null) {
@@ -58,6 +66,7 @@ public class DepartamentoFormController implements Initializable{
 		try {
 			entity = getFormData();
 			srvDepartamento.inserirOuAtualizarDepartamento(entity);
+			notificaAtualizaDadosLista();
 			Utils.currentStage(event).close();
 		}
 		catch (DbException e) {
@@ -65,6 +74,12 @@ public class DepartamentoFormController implements Initializable{
 		}
 	}
 	
+	private void notificaAtualizaDadosLista() {
+		for (AtualizaDadosLista x : atualizaDadosLista) {
+			x.onAtualizaDados();
+		}
+	}
+
 	private Departamento getFormData() {
 		Departamento dep = new Departamento();
 		
