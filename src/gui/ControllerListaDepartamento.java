@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import application.Main;
 import gui.util.Alertas;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,7 +25,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Departamento;
 import model.service.ServicoDepartamento;
-import gui.util.Utils;
 
 public class ControllerListaDepartamento implements Initializable{
 	
@@ -47,7 +47,8 @@ public class ControllerListaDepartamento implements Initializable{
 	@FXML
 	public void onBtNewAction(ActionEvent event) { // Ação que ocorrerá após o botão 'Novo' ser clicado -- (ActionEvent event) Para ter referencia do controle que receber o evento
 		Stage parentStage = Utils.currentStage(event);
-		cadastroDialogoFormulario("/gui/DepartamentoForm.fxml", parentStage); // Chamada do método de formulário de cadastro
+		Departamento dep = new Departamento();
+		cadastroDialogoFormulario(dep, "/gui/DepartamentoForm.fxml", parentStage); // Chamada do método de formulário de cadastro
 	}
 	
 	public void setServicoDepartamento(ServicoDepartamento service) {
@@ -81,10 +82,14 @@ public class ControllerListaDepartamento implements Initializable{
 		tableViewDepartamento.setItems(obsList);
 	}
 
-	private void cadastroDialogoFormulario(String nomeAbsoluto, Stage parentStage) { // Janela de Diálogo
+	private void cadastroDialogoFormulario(Departamento dep, String nomeAbsoluto, Stage parentStage) { // Janela de Diálogo
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto)); // Padrão do método ' (getClass().getResource(nomeAbsoluto)) '
 			Pane pane = loader.load();
+			
+			DepartamentoFormController controller = loader.getController();
+			controller.setDepartamento(dep);
+			controller.updateDados();
 			
 			Stage dialogoStage = new Stage();
 			
