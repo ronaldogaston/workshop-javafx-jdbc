@@ -3,9 +3,11 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
+import db.DbIntegrityException;
 import gui.ouvintes.AtualizaDadosLista;
 import gui.util.Alertas;
 import gui.util.Utils;
@@ -19,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -28,7 +31,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Departamento;
 import model.service.ServicoDepartamento;
-
 
 public class ControllerListaDepartamento implements Initializable, AtualizaDadosLista {
 
@@ -51,6 +53,9 @@ public class ControllerListaDepartamento implements Initializable, AtualizaDados
 	private TableColumn<Departamento, Departamento> colunaEditar; // Tipo Coluna. OBS: Lembrando que só declarar o mesmo
 																	// não faz com que funcione. Verifique o método
 																	// 'initialize (URL uri, ResourceBundle rb)'
+
+	@FXML
+	private TableColumn<Departamento, Departamento> colunaRemove;
 
 	@FXML
 	private Button btNew; // Tipo Botão
@@ -98,6 +103,7 @@ public class ControllerListaDepartamento implements Initializable, AtualizaDados
 		obsList = FXCollections.observableArrayList(list);
 		tableViewDepartamento.setItems(obsList);
 		inicBotaoEditar();
+		inicBotaoRemove();
 	}
 
 	private void cadastroDialogoFormulario(Departamento dep, String nomeAbsoluto, Stage parentStage) { // Janela de
@@ -151,9 +157,44 @@ public class ControllerListaDepartamento implements Initializable, AtualizaDados
 					return;
 				}
 				setGraphic(button);
-				button.setOnAction(
-						event -> cadastroDialogoFormulario(obj, "/gui/DepartamentoForm.fxml", Utils.currentStage(event)));
+				button.setOnAction(event -> cadastroDialogoFormulario(obj, "/gui/DepartamentoForm.fxml",
+						Utils.currentStage(event)));
 			}
 		});
+	}
+
+	private void inicBotaoRemove() {
+		colunaRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		colunaRemove.setCellFactory(param -> new TableCell<Departamento, Departamento>() {
+			private final Button button = new Button("remove");
+
+			@Override
+			protected void updateItem(Departamento obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(event -> removeEntity(obj));
+			}
+		});
+	}
+
+	private void removeEntity(Departamento obj) {
+		Optional<ButtonType> result = Alertas.showConfirmation("Confirmação", "Tem certeza que deseja excluir ?");
+		//Optional é o objeto que carrega outro objeto podendo estar presente ou não.
+		if (result.get() == ButtonType.OK) { // result.get = Para poder acessar esse outro objeto.
+			if (service == null) { //Teste se o programador esqueceu de 'injetar' a dependencia
+				throw new IllegalStateException("Serviço está nulo");
+			}
+			try {
+				service.remove(obj);
+				updateTableView(); // Força atualização dos dados da tabela.
+			}
+			catch (DbIntegrityException e) {
+				Alertas.showAlert("Erro ao tentar remover !", null, e.getMessage(), AlertType.ERROR);
+			}
+		}
 	}
 }
