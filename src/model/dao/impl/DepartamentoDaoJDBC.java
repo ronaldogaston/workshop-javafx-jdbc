@@ -81,15 +81,11 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 			st.setInt(1, id);
 
 			int linhasAfetadas = st.executeUpdate();
-
-			if (linhasAfetadas == 0) {
-				throw new DbException("Nenhuma linha foi afetada.");
-			} else {
-				System.out.println("Deletado com sucesso!");
-			}
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) {
 			throw new DbIntegrityException(e.getMessage());
-		} finally {
+		} 
+		finally {
 			DB.closeStatement(st);
 		}
 	}
