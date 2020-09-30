@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -40,10 +41,19 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 															// uri, ResourceBundle rb)'
 
 	@FXML
-	private TableColumn<Vendedor, Integer> colunaNome; // Tipo Coluna. OBS: Lembrando que só declarar o mesmo não
+	private TableColumn<Vendedor, String> colunaNome; // Tipo Coluna. OBS: Lembrando que só declarar o mesmo não
 															// faz com que funcione. Verifique o método 'initialize (URL
 															// uri, ResourceBundle rb)'
 
+	@FXML
+	private TableColumn<Vendedor, String> colunaEmail;
+	
+	@FXML
+	private TableColumn<Vendedor, Date> colunaDataNascimento;
+	
+	@FXML
+	private TableColumn<Vendedor, Double> colunaSalarioBase;
+	
 	@FXML
 	private TableColumn<Vendedor, Vendedor> colunaEditar; // Tipo Coluna. OBS: Lembrando que só declarar o mesmo
 																	// não faz com que funcione. Verifique o método
@@ -81,7 +91,11 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 																		// comportamento da coluna na tabela
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome")); // Comando para iniciar apropriadamento o
 																			// comportamento da coluna na tabela
-
+		colunaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		colunaDataNascimento.setCellValueFactory(new PropertyValueFactory<>("dataNascimento"));
+		Utils.formatTableColumnDate(colunaDataNascimento, "dd/MM/yyyy"); // Necessário criar o método para formatar a data
+		colunaSalarioBase.setCellValueFactory(new PropertyValueFactory<>("salarioBase"));
+		Utils.formatTableColumnDouble(colunaSalarioBase, 2); // Necessário criar o método para formatar o valor do salário, devido a 'vírgula'
 		/*
 		 * Comando para a tabela acompanhar a altura da janela ABAIXO
 		 */
