@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Vendedor;
 import model.service.ServicoVendedor;
@@ -116,36 +121,36 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 	}
 
 	private void cadastroDialogoFormulario(Vendedor dep, String nomeAbsoluto, Stage parentStage) { // Janela de
-//																										// Diálogo
-//		try {
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto)); // Padrão do método '
-//																						// (getClass().getResource(nomeAbsoluto))
-//																						// '
-//			Pane pane = loader.load();
-//
-//			VendedorFormController controller = loader.getController();
-//			controller.setVendedor(dep);
-//			controller.setServicoVendedor(new ServicoVendedor());
-//			controller.sobrescreveAtualizaDadosLista(this); // Cadeia de chamadas até o método 'onAtualizaDados'
-//			controller.updateDados();
-//
-//			Stage dialogoStage = new Stage();
-//
-//			dialogoStage.setTitle("Informe os dados do departamento");
-//			dialogoStage.setScene(new Scene(pane)); // Chamada de nova janela (janela filho) que irá sobrepor a anterior
-//			dialogoStage.setResizable(false); // Faz com que a tela NÃO possa ser máximizada/minimizada (Redimencionada)
-//			dialogoStage.initOwner(parentStage); // Chamada da janela pai da janela filho
-//			dialogoStage.initModality(Modality.WINDOW_MODAL); // Bloqueia o acesso as telas de fundos até que janela
-//																// filho tenha sido finalizada com sucesso
-//			dialogoStage.showAndWait();
-//
-//			/*
-//			 * Função para chamar a Janela do formulário de dialogo Para preencher o novo
-//			 * departamento
-//			 */
-//		} catch (IOException e) {
-//			Alertas.showAlert("IO Exception", "Erro ao carrega janela", e.getMessage(), AlertType.ERROR);
-//		}
+																										// Diálogo
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto)); // Padrão do método '
+																						// (getClass().getResource(nomeAbsoluto))
+																						// '
+			Pane pane = loader.load();
+
+			VendedorFormController controller = loader.getController();
+			controller.setVendedor(dep);
+			controller.setServicoVendedor(new ServicoVendedor());
+			controller.sobrescreveAtualizaDadosLista(this); // Cadeia de chamadas até o método 'onAtualizaDados'
+			controller.updateDados();
+
+			Stage dialogoStage = new Stage();
+
+			dialogoStage.setTitle("Informe os dados do departamento");
+			dialogoStage.setScene(new Scene(pane)); // Chamada de nova janela (janela filho) que irá sobrepor a anterior
+			dialogoStage.setResizable(false); // Faz com que a tela NÃO possa ser máximizada/minimizada (Redimencionada)
+			dialogoStage.initOwner(parentStage); // Chamada da janela pai da janela filho
+			dialogoStage.initModality(Modality.WINDOW_MODAL); // Bloqueia o acesso as telas de fundos até que janela
+																// filho tenha sido finalizada com sucesso
+			dialogoStage.showAndWait();
+
+			/*
+			 * Função para chamar a Janela do formulário de dialogo Para preencher o novo
+			 * departamento
+			 */
+		} catch (IOException e) {
+			Alertas.showAlert("IO Exception", "Erro ao carrega janela", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
