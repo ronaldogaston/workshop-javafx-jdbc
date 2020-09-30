@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="444.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerListaDepartamento">
+<VBox prefHeight="444.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerListaVendedor">
    <children>
-      <Label text="Cadastro de Departamento">
+      <Label text="Cadastro de Vendedor">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -24,10 +24,10 @@
           <Button fx:id="btNew" mnemonicParsing="false" onAction="#onBtNewAction" text="Novo" />
         </items>
       </ToolBar>
-      <TableView fx:id="tableViewDepartamento" prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="tableViewVendedor" prefHeight="200.0" prefWidth="200.0">
         <columns>
           <TableColumn fx:id="colunaId" prefWidth="56.0" text="ID" />
-          <TableColumn fx:id="colunaNome" prefWidth="105.0" text="Nome" />
+          <TableColumn fx:id="colunaNome" prefWidth="124.0" text="Nome" />
             <TableColumn fx:id="colunaEditar" prefWidth="94.0" />
             <TableColumn fx:id="colunaRemove" prefWidth="94.0" />
         </columns>
