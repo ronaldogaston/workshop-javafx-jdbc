@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Vendedor;
+import model.service.ServicoDepartamento;
 import model.service.ServicoVendedor;
 
 public class ControllerListaVendedor implements Initializable, AtualizaDadosLista {
@@ -130,7 +131,8 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 
 			VendedorFormController controller = loader.getController();
 			controller.setVendedor(dep);
-			controller.setServicoVendedor(new ServicoVendedor());
+			controller.setServicos(new ServicoVendedor(), new ServicoDepartamento());
+			controller.carregarObjAssociados();
 			controller.sobrescreveAtualizaDadosLista(this); // Cadeia de chamadas até o método 'onAtualizaDados'
 			controller.updateDados();
 
@@ -149,6 +151,7 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 			 * departamento
 			 */
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alertas.showAlert("IO Exception", "Erro ao carrega janela", e.getMessage(), AlertType.ERROR);
 		}
 	}
