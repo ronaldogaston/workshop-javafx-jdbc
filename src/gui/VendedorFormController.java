@@ -1,8 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Vendedor;
@@ -38,7 +42,25 @@ public class VendedorFormController implements Initializable{
 	private TextField txtNome;
 	
 	@FXML
+	private TextField txtEmail;
+	
+	@FXML
+	private DatePicker dpDataNascimento;
+	
+	@FXML
+	private TextField txtSalarioBase;
+	
+	@FXML
 	private Label labelErrorNome;
+
+	@FXML
+	private Label labelErrorEmail;
+
+	@FXML
+	private Label labelErrorDataNascimento;
+	
+	@FXML
+	private Label labelErrorSalarioBase;
 	
 	@FXML
 	private Button btSalvar;
@@ -117,6 +139,9 @@ public class VendedorFormController implements Initializable{
 	private void initializeNodes() {
 		Restricoes.setTextFieldInteger(txtId);
 		Restricoes.setTextFieldMaxLength(txtNome, 30);
+		Restricoes.setTextFieldDouble(txtSalarioBase);
+		Restricoes.setTextFieldMaxLength(txtEmail, 40);
+		Utils.formatDatePicker(dpDataNascimento, "dd/MM/yyyy");
 	}
 	
 	public void updateDados() {
@@ -125,6 +150,13 @@ public class VendedorFormController implements Initializable{
 		}
 		txtId.setText(String.valueOf(entity.getId()));
 		txtNome.setText(entity.getNome());
+		txtEmail.setText(entity.getEmail());
+		Locale.setDefault(Locale.US);
+		if (entity.getDataNascimento() != null) {
+			dpDataNascimento.setValue(LocalDate.ofInstant(entity.getDataNascimento().toInstant(), ZoneId.systemDefault())); // Comando Zone para pegar horário da máquina do usuário
+		}
+		
+		txtSalarioBase.setText(String.format("%.2f", entity.getSalarioBase()));
 	}
 	
 	private void setMensagemDeErros(Map<String, String> erros) { //Método para pegar os erros da exceção e anexar na tela
