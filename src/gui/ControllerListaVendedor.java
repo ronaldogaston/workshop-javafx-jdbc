@@ -138,7 +138,7 @@ public class ControllerListaVendedor implements Initializable, AtualizaDadosList
 
 			Stage dialogoStage = new Stage();
 
-			dialogoStage.setTitle("Informe os dados do departamento");
+			dialogoStage.setTitle("Informe os dados do vendedor");
 			dialogoStage.setScene(new Scene(pane)); // Chamada de nova janela (janela filho) que irá sobrepor a anterior
 			dialogoStage.setResizable(false); // Faz com que a tela NÃO possa ser máximizada/minimizada (Redimencionada)
 			dialogoStage.initOwner(parentStage); // Chamada da janela pai da janela filho

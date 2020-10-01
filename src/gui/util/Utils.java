@@ -30,6 +30,15 @@ public class Utils {
 		}
 	}
 
+	public static Double tryParseToDouble(String str) { // Faz a leitura de uma 'caixa de texto' e obriga que seja números
+		// inteiros
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
 	public static <T> void formatTableColumnDate(TableColumn<T, Date> tableColumn, String format) { // Método para
 																									// formatar a data
 		tableColumn.setCellFactory(column -> {

@@ -1,9 +1,11 @@
 package gui;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -128,12 +130,32 @@ public class VendedorFormController implements Initializable {
 		ValidacaoDeExcecao excecao = new ValidacaoDeExcecao("Validação de erro!");
 
 		dep.setId(Utils.tryParseToInt(txtId.getText())); // Verifica se o campo está preenchido com número inteiro
-		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) { // trim = Para eliminar qualquer espaço
-																				// em branco no inicio ou no final.
+		if (txtNome.getText() == null || txtNome.getText().trim().equals("")) { // trim = Para eliminar qualquer espaço	// em branco no inicio ou no final.
 			excecao.addErros("nome", " O campo não pode estar vazio!");
 		}
 		dep.setNome(txtNome.getText());
 
+		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) { // trim = Para eliminar qualquer espaço
+			// em branco no inicio ou no final.
+			excecao.addErros("email", " O campo não pode estar vazio!");
+		}
+		dep.setEmail(txtEmail.getText());
+		
+		if (dpDataNascimento.getValue() == null) {
+			excecao.addErros("dataNascimento", " O campo não pode estar vazio!");
+		}
+		else {
+		Instant instant = Instant.from(dpDataNascimento.getValue().atStartOfDay(ZoneId.systemDefault()));
+		dep.setDataNascimento(Date.from(instant));
+		}
+		
+		if (txtSalarioBase.getText() == null || txtSalarioBase.getText().trim().equals("")) { // trim = Para eliminar qualquer espaço em branco no inicio ou no final.
+			excecao.addErros("salarioBase", " O campo não pode estar vazio!");
+		}
+		dep.setSalarioBase(Utils.tryParseToDouble(txtSalarioBase.getText()));
+		
+		dep.setDepartamento(comboBoxDepartamento.getValue());
+		
 		if (excecao.getErros().size() > 0) { // Teste na coleção de erros, se há algum erro.
 			throw excecao;
 		}
@@ -157,7 +179,7 @@ public class VendedorFormController implements Initializable {
 		Restricoes.setTextFieldDouble(txtSalarioBase);
 		Restricoes.setTextFieldMaxLength(txtEmail, 40);
 		Utils.formatDatePicker(dpDataNascimento, "dd/MM/yyyy");
-		
+
 		initializeComboBoxDepartamento();
 	}
 
@@ -183,8 +205,7 @@ public class VendedorFormController implements Initializable {
 		}
 		if (entity.getDepartamento() == null) {
 			comboBoxDepartamento.getSelectionModel().selectFirst();
-		}
-		else {
+		} else {
 			comboBoxDepartamento.setValue(entity.getDepartamento());
 		}
 		txtSalarioBase.setText(String.format("%.2f", entity.getSalarioBase()));
@@ -203,10 +224,12 @@ public class VendedorFormController implements Initializable {
 	private void setMensagemDeErros(Map<String, String> erros) { // Método para pegar os erros da exceção e anexar na
 																	// tela
 		Set<String> fields = erros.keySet();
+		
+		labelErrorNome.setText((fields.contains("nome") ? erros.get("nome") : ""));
+		labelErrorEmail.setText((fields.contains("email") ? erros.get("email") : ""));
+		labelErrorDataNascimento.setText((fields.contains("dataNascimento") ? erros.get("dataNascimento") : ""));
+		labelErrorSalarioBase.setText((fields.contains("salarioBase") ? erros.get("salarioBase") : ""));
 
-		if (fields.contains("nome")) {
-			labelErrorNome.setText(erros.get("nome"));
-		}
 	}
 
 	private void initializeComboBoxDepartamento() {
